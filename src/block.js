@@ -37,16 +37,13 @@ class Block {
      */
     validate() {
         let self = this;
-        const currentHash,
-            currentBlock,
-            compareHash;
         return new Promise((resolve, reject) => {
             // Save in auxiliary variable the current block hash
-            currentHash = self.hash;
-            currentBlock = self;                    
+            const currentHash = self.hash;
+            const currentBlock = self;                    
             // Recalculate the hash of the Block
             currentBlock.hash = null;
-            compareHash = SHA256(JSON.stringify(currentBlock)).toString();
+            const compareHash = SHA256(JSON.stringify(currentBlock)).toString();
             currentBlock.hash = currentHash
             // Comparing if the hashes changed
             if(currentHash === compareHash) {
