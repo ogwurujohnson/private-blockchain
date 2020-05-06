@@ -138,7 +138,12 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-            
+            let block = this.chain.filter((block) => block.hash === hash)[0];
+            if (block) {
+                resolve(block)
+            } else {
+                reject('not found')
+            }
         });
     }
 
@@ -169,7 +174,16 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            
+            for (let i = 1; i <= this.height; i++) { 
+                let currentBlock = this.chain[i];
+                let blockBody = currentBlock.getBData();
+                blockBody.then(function(bData) {
+                    if (bData.address == address) {
+                        stars.push(bData.star);
+                    }
+                });
+            }
+            resolve(stars);
         });
     }
 
@@ -183,7 +197,13 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            
+            this.chain.map(async (block) => {
+                let validBlock = await block.validate();
+                if(!validBlock) {
+                    errorLog.push(`Block ${block.hash} is invalid`)
+                }
+            })
+            resolve(errorLog);
         });
     }
 
